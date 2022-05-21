@@ -11,6 +11,7 @@
 #include "Box.hpp"
 #include "Enemies.hpp"
 #include "Mushroom.hpp"
+#include "LeverTurn.hpp"
 #include <string>
 #include <vector>
 
@@ -34,6 +35,7 @@ public:
     void RenderBoxes();
     void RenderEnemies();
     void RenderMushrooms();
+    void RenderLeverTurn();
     void Update(const Uint32& deltaTime);
     void UpdateCoins(const Uint32& deltaTime);
     void UpdateSpikes(const Uint32& deltaTime);
@@ -44,6 +46,7 @@ public:
     void UpdateBoxes(const Uint32& deltaTime);
     void UpdateEnemies(const Uint32& deltaTime);
     void UpdateMushrooms(const Uint32& deltaTime);
+    void UpdateLeverTurn(const Uint32& deltaTime);
     // Colliers:
     void Ground_and_Player(Ground** ground, Player* player, int& width, int& height);
     void Coin_and_Player(std::vector<Coin*>& coins, Player* player);
@@ -59,7 +62,10 @@ public:
     void Boxes_and_Player(std::list<Box*>& boxes, Player* player);
     void Enemies_and_Player(std::vector<Enemies*>& enemies, Player* player);
     void MushRoom_and_Player(std::list<Mushroom*>& mushrooms, Player* player);
+    void LeverTurn_and_Player(LeverTurn* leverturn, Player* player);
+    void LeverTurn_and_Stone(LeverTurn* leverturn, std::list<Stone*>& stones);
     int countCoin = 0;
+    bool winGame;
 
 private:
     int width, height;
@@ -78,5 +84,5 @@ private:
     Player* player;
     ExitDoor* exitdoor;
     Door* door;
-    bool wingame;
+    LeverTurn* leverturn;
 };

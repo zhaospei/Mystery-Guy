@@ -7,11 +7,12 @@
 #include <math.h>
 
 Map::Map(){
-    wingame = false;
+    winGame = false;
     grounds = nullptr;
     exitdoor = nullptr;
     door = nullptr;
     player = nullptr;
+    leverturn = nullptr;
     isBackground2 = 0;
     width = 12, height = 20;
     backGround.setSize({1000, 560});
@@ -57,6 +58,9 @@ Map::~Map(){
 	}
     if (door != nullptr){
         delete door;
+    }
+    if (leverturn != nullptr){
+        delete leverturn;
     }
 }
 
@@ -135,7 +139,17 @@ void Map::loadMapFile(std::string path){
         map >> x >> y;
         mushrooms.push_back(new Mushroom({x, y}));
     }
-
+    map >> tolCur;
+    for (int i = 0; i < tolCur; i++){
+        map >> x >> y;
+        leverturn = new LeverTurn({x, y});
+        int _tolcur = 0;
+        map >> _tolcur;
+        for (int j = 0; j < _tolcur; j++){
+            map >> x >> y >> _ntype;
+            leverturn->addWall({x, y}, _ntype);
+        }
+    }
 	map.close();
 }
 
@@ -147,6 +161,7 @@ void Map::loadTexture(){
 void Map::Render(){
     RenderBackground();
     RenderDoor();
+    RenderLeverTurn();
     RenderGrounds();
     RenderCoins();
     RenderSpikes();
@@ -226,11 +241,15 @@ void Map::RenderMushrooms(){
     }
 }
 
+void Map::RenderLeverTurn(){
+    if (leverturn != nullptr) leverturn->Render();
+}
+
 void Map::Update(const Uint32& deltaTime){
     Coin_and_Player(coins, player);
     Ground_and_Spikes(grounds, spikes, width, height);
     Door_and_Player(door, player);
-    ExitDoor_and_Player(exitdoor, player, wingame);
+    ExitDoor_and_Player(exitdoor, player, winGame);
     Ground_and_Player(grounds, player, width, height);
     Ground_and_Stone(grounds, stones, width, height);
     Spikes_and_Stone(spikes, stones);
@@ -238,6 +257,8 @@ void Map::Update(const Uint32& deltaTime){
     Boxes_and_Player(boxes, player);
     Enemies_and_Player(enemies, player);
     MushRoom_and_Player(mushrooms, player);
+    LeverTurn_and_Player(leverturn, player);
+    LeverTurn_and_Stone(leverturn, stones);
     Stones(stones);
     UpdateCoins(deltaTime);
     UpdatePlayer(deltaTime);
@@ -248,6 +269,7 @@ void Map::Update(const Uint32& deltaTime){
     UpdateBoxes(deltaTime);
     UpdateEnemies(deltaTime);
     UpdateMushrooms(deltaTime);
+    UpdateLeverTurn(deltaTime);
 }
 
 void Map::UpdateCoins(const Uint32& deltaTime){
@@ -325,6 +347,10 @@ void Map::UpdateMushrooms(const Uint32& deltaTime){
     }
 }
 
+void Map::UpdateLeverTurn(const Uint32& deltaTime){
+    if (leverturn != nullptr) leverturn->Update(deltaTime);
+}
+
 //Colliders:
 void Map::Ground_and_Player(Ground** ground, Player* player, int& width, int& height) {
 	if (player == nullptr) {
@@ -379,6 +405,7 @@ void Map::ExitDoor_and_Player(ExitDoor* exitdoor, Player* player,bool& wingame) 
 	if (exitdoor->getCollider()->checkCollision(player->getCollider())) {
 		player->setPosition({exitdoor->getPosition().first + 12.5, exitdoor->getPosition().second + 12.5});
 		player->wingame = true;
+        winGame = true;
 	}
 }
 
@@ -507,6 +534,7 @@ void Map::Enemies_and_Player(std::vector<Enemies*>& enemies, Player* player){
 			int Check = enemie->getCollider()->checkCollision(player->getCollider());
 			if (Check == collider::right || Check == collider::left) {
 				player->end = true;
+                player->attack.Check = false;
 			}
 		}
 	}
@@ -521,6 +549,40 @@ void Map::MushRoom_and_Player(std::list<Mushroom*>& mushrooms, Player* player){
 		if (Check != 0 && Check != collider::down && Check != collider::_down) {
 			player->velocity.second= -sqrt(2.0f * 981.0f * player->jumHeight * 1.7f);
 			player->canJump = false;
+		}
+	}
+}
+
+void Map::LeverTurn_and_Player(LeverTurn* leverturn, Player* player){
+    if (player == nullptr || leverturn == nullptr)
+		return;
+	if (player->attack.Check == true && leverturn->startReStatus()){
+		if (leverturn->colliderSwitch->checkCollision(player->attack.collider) != 0){
+			leverturn->status = !(leverturn->status);
+			leverturn->timeSetStatus = 500;
+		}
+	}
+	if (leverturn->status == false ) {
+		for (auto &wall: leverturn->walls){
+			int Check = wall.first.second->checkCollision(player->getCollider(), 1.0f);
+			if ( Check == collider::top || Check == collider::_top){
+				player->canJump = true;
+			}
+		}
+	}
+}
+void Map::LeverTurn_and_Stone(LeverTurn* leverturn, std::list<Stone*>& stones){
+    if (leverturn == nullptr){
+		return;
+	}
+	for (auto& stone : stones){
+		for (auto wall: leverturn->walls){
+			if (leverturn->status == false){
+				int Check = wall.first.second->checkCollision(stone->getCollider(), 1.0f);
+				if (Check == collider::top || Check == collider::_top){
+					stone->canDrop = false;
+				}
+			}
 		}
 	}
 }

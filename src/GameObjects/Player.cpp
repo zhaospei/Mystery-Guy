@@ -55,7 +55,7 @@ void Player::Update(const Uint32& deltaTime){
         if (currentKeyStates[SDL_SCANCODE_A] && attack.Check == false){
             attack.Check = true;
             velocity = {0, 0};
-            attack.animation->currentFrame = {7, 0};
+            attack.animation->currentFrame = {7, 1};
         }
     }
     if (canJump == false && moveQuick == false){
@@ -69,6 +69,7 @@ void Player::Update(const Uint32& deltaTime){
         timeClickS = 1000;
         velocity = {0, 0};
     }
+    if (start) attack.Check = false;
     limitPosition();
     updateAnimation(deltaTime);
     updateShadow(deltaTime);
@@ -79,15 +80,34 @@ void Player::Update(const Uint32& deltaTime){
         move({(int) velocity.first * (int) deltaTime / 1000, (int) velocity.second * (int) deltaTime / 1000});
         body.setPosition(getPosition());
     }
+    if (start) attack.Check = false;
 }
 
 void Player::updateAnimation(const Uint32& deltaTime){
-    if (updateStart(deltaTime)) return;
-    if (updateEnd(deltaTime)) return;
-    if (updatePushStone(deltaTime)) return;
-    if (updateWinGame(deltaTime)) return;
-    if (updateMoveQuick(deltaTime)) return;
-    if (updateAttack(deltaTime)) return;
+    if (updateStart(deltaTime)){
+       // std::cout << 1 << std::endl;
+        return;
+    }
+    if (updateEnd(deltaTime)){
+       // std::cout << 2 << std::endl;
+        return;
+    }
+    if (updatePushStone(deltaTime)) {
+       // std::cout << 3 << std::endl;
+        return;
+    }
+    if (updateWinGame(deltaTime)){
+       // std::cout << 4 << std::endl;
+        return;
+    }
+    if (updateMoveQuick(deltaTime)){
+       // std::cout << 5 << std::endl;
+        return;
+    }
+    if (updateAttack(deltaTime)){
+       // std::cout << 6 << std::endl;
+        return;
+    }
     updateMove(deltaTime);    
 }
 

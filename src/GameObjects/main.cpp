@@ -8,8 +8,9 @@
 #include "Map.hpp"
 #include "Ground.hpp"
 int theLast = 0;
+int _curMap = 1;
 
-Map mainMap;
+Map* mainMap;
 bool init();
 void close();
 int main(int argc, char *argv[]){
@@ -20,10 +21,12 @@ int main(int argc, char *argv[]){
 		std::string fontPath = "data/Fonts/visitor1.ttf";
 		fGame = TTF_OpenFont(fontPath.c_str(), 40);
 		Uint32 start_time = 0, current_time, deltaTime;
-		mainMap.loadMapFile("data/map/3.txt");
-		mainMap.loadTexture();
+		mainMap = new Map();
+		mainMap->loadMapFile("data/map/1.txt");
+		mainMap->loadTexture();
 		while (!quit){
 			SDL_Event event;
+			if (quitGame) break;
 			// Vòng lặp của game
 			while (!quitGame){
 				frameStart = SDL_GetTicks();
@@ -32,14 +35,28 @@ int main(int argc, char *argv[]){
 				current_time = SDL_GetTicks();
 				deltaTime = current_time - start_time;
 				start_time = current_time;
-				mainMap.Update(deltaTime);
+				if (mainMap->winGame){
+					_curMap++;
+					if (_curMap > 5){
+						quitGame = true;
+						break;
+					}
+					delete mainMap;
+					std::string _curMapPath = "data/map/" + std::to_string(_curMap) + ".txt";
+					std::cout << " " << _curMapPath << std::endl;
+					mainMap = new Map();
+					mainMap->loadMapFile(_curMapPath);
+					mainMap->loadTexture();
+					mainMap->Render();
+				}
+				mainMap->Update(deltaTime);
 				while (SDL_PollEvent(&event) != 0){
 					if (event.type == SDL_QUIT){
 						quitGame = true;
 						quit = true;
 					}
 				}
-				mainMap.Render();
+				mainMap->Render();
 				SDL_RenderPresent(renderer);
 				frameTime = SDL_GetTicks() - frameStart;
 				if (frameDelay > frameTime)
