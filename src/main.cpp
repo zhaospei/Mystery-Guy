@@ -1,118 +1,102 @@
-#include "RenderWindow.h"
-#include "GTexture.h"
-#include "Character.h"
-
-#include <SDL.h>
 #include <SDL_image.h>
-#include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <iostream>
-#include <fstream>
-#include <string>
+#include <cstdlib>
+#include <ctime>
+#include "Variables.hpp"
+#include "Texture.hpp"
+#include "Map.hpp"
+#include "Ground.hpp"
+int theLast = 0;
 
-SDL_Window* gWindow;
-SDL_Renderer* gRenderer;
-
-const int SPEED = 30;
-
-bool init(){
-	if (SDL_Init(SDL_INIT_VIDEO) > 0)
-		std::cout << "SDL_Init has failed. Error: " << SDL_GetError() << std::endl;
-	if (!(IMG_Init(IMG_INIT_PNG)))
-		std::cout << "IMG_init has failed. Error: " << SDL_GetError() << std::endl;
-	if (!(TTF_Init()))
-		std::cout << "TTF_init has failed. Error: " << SDL_GetError() << std::endl;
-	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-	return true;
-}
-
-bool SDLinit = init();
-LTexture mainMap;
-Character mainChar(1000, 1000);
-SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-Tile* tileSet[TOTAL_TILES];
-
-void loadMapFile(){
-	int x = 0;
-	int y = 0;
-
-	std::ifstream map("res/data/map.txt");	
-
-	if (map.fail()){
-		std::cout << "Couldn't open Map File!" << std::endl;
-		return ;
-	}
-
-	for (int i = 1; i <= TOTAL_TILES_ROW; i++){
-		for (int j = 1; j <= TOTAL_TILES_COL; j++){
-			int typeTile = -1;
-			map >> typeTile;
-
-			if (map.fail()){
-				std::cout << "Unexpected end of file!" << std::endl;
-				return;
-			}
-
-			if ((typeTile >= 0) && (typeTile < TOTAL_TILE_SPRITES)) {
-				tileSet[getPos(i, j)] = new Tile(x, y, typeTile);
-			}
-			else{
-				std::cout << "Map has invaild type!" << std::endl;
-			}
-
-			x = x + TILE_WIDTH;
-
-			if (x >= LEVEL_WIDTH){
-				x = 0;
-				y = y + TILE_HEIGHT;
+Map mainMap;
+bool init();
+void close();
+int main(int argc, char *argv[]){
+	if (!init())
+		std::cout << "Khoi tao chuong trinh that bai..." << std::endl;
+	else{
+		bool quit = false, quitGame = false;
+		std::string fontPath = "data/Fonts/visitor1.ttf";
+		fGame = TTF_OpenFont(fontPath.c_str(), 40);
+		Uint32 start_time = 0, current_time, deltaTime;
+		mainMap.loadMapFile("data/map/3.txt");
+		mainMap.loadTexture();
+		while (!quit){
+			SDL_Event event;
+			// Vòng lặp của game
+			while (!quitGame){
+				frameStart = SDL_GetTicks();
+				SDL_RenderClear(renderer);
+				// Xử lí các thao tác người dùng
+				current_time = SDL_GetTicks();
+				deltaTime = current_time - start_time;
+				start_time = current_time;
+				mainMap.Update(deltaTime);
+				while (SDL_PollEvent(&event) != 0){
+					if (event.type == SDL_QUIT){
+						quitGame = true;
+						quit = true;
+					}
+				}
+				mainMap.Render();
+				SDL_RenderPresent(renderer);
+				frameTime = SDL_GetTicks() - frameStart;
+				if (frameDelay > frameTime)
+					SDL_Delay(frameDelay - frameTime);
 			}
 		}
 	}
-	map.close();
+	close();
+	return 0;
 }
 
-void loadMedia(){
-	mainMap.loadFromFile("res/gfx/map.png", gRenderer);
-	mainChar.gChaTexture.loadFromFile("res/gfx/char.png", gRenderer);
-}
-
-
-int main(int argc, char* args[]){
-
-	SDLinit &= initWindow(gWindow, gRenderer);
-	if (!SDLinit){
-		std::cout << "Failed to initialize!" << std::endl;
+bool init(){
+	bool success = true;
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
+		std::cout << "Khong the khoi tao SDL. Loi: " << SDL_GetError() << std::endl;
+		success = false;
 	}
 	else{
-		
-		bool quit = false;
-		SDL_Event e;
-		
-		loadMedia();
-		loadMapFile();
-
-		while (!quit){
-			
-			while (SDL_PollEvent(&e) != 0){
-				if (e.type == SDL_QUIT){
-					quit = true;
-				}
-				mainChar.handleEvent(e);
-
+		window = SDL_CreateWindow("Mystery Guy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+		if (window == NULL){
+			std::cout << "Khong the tao cua so game! SDL error: " << SDL_GetError() << std::endl;
+			success = false;
+		}
+		else{
+			renderer = SDL_CreateRenderer(window, -1, 0);
+			if (renderer == NULL){
+				std::cout << "Khong the tao but ve! SDL error: " << SDL_GetError() << std::endl;
+				success = false;
 			}
-			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-			SDL_RenderClear(gRenderer);
-
-			mainChar.move(tileSet);
-			mainChar.setCamera(camera);
-			//mapp.render(x, y, gRenderer);
-			mainMap.render(-camera.x, -camera.y, gRenderer);
-			mainChar.render(camera, gRenderer);
-			SDL_RenderPresent(gRenderer);
-		}	
+			else{
+				if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)){
+					std::cout << "Khong the khoi dong SDL_image! SDL_image error: " << IMG_GetError() << std::endl;
+					success = false;
+				}
+				if (TTF_Init() == -1){
+					std::cout << "Khong the khoi dong SDL_ttf! SDL_ttf error: " << TTF_GetError() << std::endl;
+					success = false;
+				}
+				if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 2048) < 0){
+					std::cout << "Khong the khoi dong SDL_mixer! SDl_mixer error: " << Mix_GetError() << std::endl;
+					success = false;
+				}
+			}
+		}
 	}
-	SDL_DestroyWindow(gWindow);
-	SDL_Quit();
+	return success;
+}
+
+void close(){
+	// Đóng cửa sổ và renderer
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	window = nullptr;
+	renderer = nullptr;
+	// Thoát SDL
+	Mix_CloseAudio();
+	IMG_Quit();
 	TTF_Quit();
-	return 0;
+	SDL_Quit();
 }

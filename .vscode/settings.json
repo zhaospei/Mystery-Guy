@@ -39,6 +39,10 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "ctime": "cpp",
+        "cstring": "cpp",
+        "list": "cpp",
+        "map": "cpp"
     }
 }
