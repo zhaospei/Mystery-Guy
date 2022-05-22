@@ -20,8 +20,7 @@ public:
     Map();
     ~Map();
     
-    void loadMapFile(std::string path);
-    void loadTexture();
+    void loadMap(std::string path);
     void Render();
     void RenderBackground();
     void RenderGrounds();
@@ -64,13 +63,15 @@ public:
     void MushRoom_and_Player(std::list<Mushroom*>& mushrooms, Player* player);
     void LeverTurn_and_Player(LeverTurn* leverturn, Player* player);
     void LeverTurn_and_Stone(LeverTurn* leverturn, std::list<Stone*>& stones);
-    int countCoin = 0;
+    Player* getPlayer();
     bool winGame;
+    int exitgame = 0;
 
 private:
     int width, height;
     Ground** grounds;
-    Texture backGround, backGround2;
+    Texture* backGround;
+    Texture* backGround2;
     bool isBackground2;
     std::vector<Coin*> coins;
     std::vector<Enemies*> enemies;
@@ -79,8 +80,6 @@ private:
     std::list<Stone*> stones;
     std::list<Box*> boxes;
     std::list<Mushroom*> mushrooms;
-    Texture totalCoin;
-    std::string total_Coin;
     Player* player;
     ExitDoor* exitdoor;
     Door* door;

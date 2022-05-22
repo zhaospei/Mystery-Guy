@@ -13,6 +13,8 @@ extern unsigned int frameTime;
 extern SDL_Window *window;
 extern int screenWidth;
 extern int screenHeight;
+extern int _totalCoins;
+extern int _totalHearts;
 
 extern int GROUND_WIDTH;
 extern int GROUND_HEIGHT;

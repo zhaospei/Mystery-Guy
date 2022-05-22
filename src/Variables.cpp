@@ -7,6 +7,9 @@ Uint32 frameStart;
 unsigned int frameTime;
 
 SDL_Window *window;
+int _totalCoins = 0;
+int _totalHearts = 0;
+
 int screenWidth = 1000;
 int screenHeight = 560;
 

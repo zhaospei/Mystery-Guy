@@ -274,6 +274,7 @@ void Player::Reset(){
     canJump = false;
     setPosition(positionStart);
     face_Right = faceRightStart;
+    _totalHearts--;
 }
 
 Collider* Player::getCollider() {

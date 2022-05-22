@@ -15,8 +15,6 @@ Map::Map(){
     leverturn = nullptr;
     isBackground2 = 0;
     width = 12, height = 20;
-    backGround.setSize({1000, 560});
-    backGround2.setSize({1000, 560});
     grounds = new Ground * [width];
 	for (int i = 0; i < width; i++) {
 		grounds[i] = new Ground[height];
@@ -62,9 +60,23 @@ Map::~Map(){
     if (leverturn != nullptr){
         delete leverturn;
     }
+    if (backGround != nullptr){
+        delete backGround;
+    }
+    if (backGround2 != nullptr){
+        delete backGround2;
+    }
 }
 
-void Map::loadMapFile(std::string path){
+void Map::loadMap(std::string path){
+    backGround = new Texture();
+    backGround2 = new Texture();
+    backGround->loadFromFile("data/textures/background/background.png");
+    if (isBackground2) backGround2->loadFromFile("data/textures/background/bg_2.png");
+    backGround->setPosition({0, 0});
+    backGround->setSize({1000, 560});
+    backGround2->setSize({1000, 560});
+    backGround2->setPosition({0, 0});
 	std::ifstream map(path.c_str());	
 	if (map.fail()){
 		std::cout << "Khong the mo file Map!" << std::endl;
@@ -94,9 +106,6 @@ void Map::loadMapFile(std::string path){
     int x, y, _type;
     map >> x >> y >> _type;
     player = new Player({x, y}, _type);
-    totalCoin.setPosition({20, 10});
-    total_Coin = "0";
-    totalCoin.loadFromRenderedText(total_Coin, {140, 140, 140});
     int tolCur = 0;
     map >> tolCur; bool _ntype;
     for (int i = 0; i < tolCur; i++){
@@ -153,11 +162,6 @@ void Map::loadMapFile(std::string path){
 	map.close();
 }
 
-void Map::loadTexture(){
-    backGround.loadFromFile("data/textures/background/background.png");
-    if (isBackground2) backGround2.loadFromFile("data/textures/background/bg_2.png");
-}
-
 void Map::Render(){
     RenderBackground();
     RenderDoor();
@@ -175,8 +179,8 @@ void Map::Render(){
 }
 
 void Map::RenderBackground(){
-    backGround.render(0, 0);
-    if (isBackground2) backGround2.render(0, 0);
+    backGround->render(false);
+    if (isBackground2) backGround2->render(false);
 }
 void Map::RenderGrounds(){
     for (int i = 0; i < width; i++){
@@ -190,7 +194,6 @@ void Map::RenderCoins(){
     for (auto& coin: coins){
         coin->Render();
     }
-    totalCoin.render();
 }
 
 void Map::RenderPlayer(){
@@ -276,8 +279,6 @@ void Map::UpdateCoins(const Uint32& deltaTime){
     for (int i = 0; i < (int) (coins.size()); i++){
         coins[i]->Update(deltaTime);
     }
-    total_Coin = std::to_string(countCoin);
-    totalCoin.loadFromRenderedText(total_Coin, {255, 255, 255});
 }
 
 void Map::UpdateSpikes(const Uint32& deltaTime){
@@ -291,6 +292,10 @@ void Map::UpdateSpikes(const Uint32& deltaTime){
 
 void Map::UpdatePlayer(const Uint32& deltaTime){
     if (player->deletePlayer){
+        if (player->wingame) exitgame = 1;
+		else {
+            exitgame = 2;
+        }
         return;
     }
     player->Update(deltaTime);
@@ -351,6 +356,10 @@ void Map::UpdateLeverTurn(const Uint32& deltaTime){
     if (leverturn != nullptr) leverturn->Update(deltaTime);
 }
 
+Player* Map::getPlayer(){
+    return player;
+}
+
 //Colliders:
 void Map::Ground_and_Player(Ground** ground, Player* player, int& width, int& height) {
 	if (player == nullptr) {
@@ -379,7 +388,7 @@ void Map::Coin_and_Player(std::vector<Coin*>& coins, Player* player) {
 	for (auto& coin : coins) {
 		if (coin->getCollider()->checkCollision(player->getCollider())) {
 			coin->eatCoin++;
-            if (coin->eatCoin == 1) countCoin ++;
+            if (coin->eatCoin == 1) _totalCoins ++;
 		}
 	}
 }
@@ -511,7 +520,7 @@ void Map::Boxes_and_Player(std::list<Box*>& boxes, Player* player) {
 		if (player->attack.Check == true){
 			if (box->loot == 0 && player->attack.collider->checkCollision(box->getCollider())){
 				box->loot++;
-                countCoin += 5;
+                _totalCoins += 5;
 			}
 		}
 	}
