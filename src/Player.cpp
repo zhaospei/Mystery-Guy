@@ -49,10 +49,12 @@ void Player::Update(const Uint32& deltaTime){
             velocity.first -= speed;
         }
         if (currentKeyStates[SDL_SCANCODE_SPACE] && canJump) { 
+            Mix_PlayChannel(-1, jump, 0);
             velocity.second = - sqrt(2.0f * 981.0f * jumHeight);
             canJump = false;
         }
         if (currentKeyStates[SDL_SCANCODE_A] && attack.Check == false){
+            Mix_PlayChannel(-1, slash, 0);
             attack.Check = true;
             velocity = {0, 0};
             attack.animation->currentFrame = {7, 1};
@@ -65,6 +67,7 @@ void Player::Update(const Uint32& deltaTime){
         timeClickS -= deltaTime;
     }
     if (currentKeyStates[SDL_SCANCODE_S] && moveQuick == 0 && timeClickS <= 0){
+        Mix_PlayChannel(-1, hit, 0);
         moveQuick = 8;
         timeClickS = 1000;
         velocity = {0, 0};
@@ -143,7 +146,7 @@ void Player::updateShadow(const Uint32& deltaTime) {
 
 bool Player::updateEnd(const Uint32& deltaTime){
     if (end == false) return false;
-
+    Mix_PlayChannel(-1, die, 0);
     if (animation->update(deltaTime, {7, 0}, face_Right)){
         deletePlayer = true;
     }
@@ -164,8 +167,8 @@ bool Player::updateWinGame(const Uint32& deltaTime) {
 }
 
 bool Player::updatePushStone(const float& deltaTime) {
-   // std::cout << pushStone << " " << velocity.first << std::endl; 
 	if (pushStone == true && velocity.first != 0) {
+        Mix_PlayChannel(-1, pushrock, 0);
 		animation->update(deltaTime, {6, 2}, face_Right);
         return true;
     }

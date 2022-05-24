@@ -1,6 +1,8 @@
 #pragma once
 #include "Map.hpp"
 
+std::string conver(int num);
+
 class Game {
 public:
     Game();
@@ -27,6 +29,7 @@ public:
 private:
     bool is_Running;
     Map* mainMap;
+    bool checkplaysound = false;
     bool WINGAME = false;
     bool LOSEGAME = false;
     Texture* TotalCoins_1;
@@ -37,4 +40,8 @@ private:
     Texture* Lose;
     Texture* Win;
     Texture* gamePause;
+    Texture* _next;
+    Texture* _nextpause;
+    Texture* _losemain;
+    Texture* _winmain;
 };

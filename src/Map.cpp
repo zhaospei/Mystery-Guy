@@ -388,8 +388,11 @@ void Map::Coin_and_Player(std::vector<Coin*>& coins, Player* player) {
 	for (auto& coin : coins) {
 		if (coin->getCollider()->checkCollision(player->getCollider())) {
 			coin->eatCoin++;
-            if (coin->eatCoin == 1) _totalCoins ++;
-		}
+            if (coin->eatCoin == 1){
+                _totalCoins ++;
+                Mix_PlayChannel(-1, pickCoin, 0);
+            }
+        }
 	}
 }
 
@@ -415,6 +418,7 @@ void Map::ExitDoor_and_Player(ExitDoor* exitdoor, Player* player,bool& wingame) 
 		player->setPosition({exitdoor->getPosition().first + 12.5, exitdoor->getPosition().second + 12.5});
 		player->wingame = true;
         winGame = true;
+        Mix_PlayChannel(-1, tele, 0);
 	}
 }
 
@@ -534,10 +538,12 @@ void Map::Enemies_and_Player(std::vector<Enemies*>& enemies, Player* player){
 			int Check = player->attack.collider->checkCollision(enemie->getCollider());
 			if (Check != 0 && Check != collider::_top && Check != collider::_down) {
 				enemie->checkDie++;
+                Mix_PlayChannel(-1, kill, 0);
 			}
 		}
 		else if (player->end == false && enemie->checkDie == 0 && enemie->getCollider()->checkCollision(player->getCollider()) == collider::top) {
 			enemie->checkDie++;
+            Mix_PlayChannel(-1, kill, 0);
 		}
 		else if (enemie->checkDie == 0 ) {
 			int Check = enemie->getCollider()->checkCollision(player->getCollider());
@@ -558,6 +564,7 @@ void Map::MushRoom_and_Player(std::list<Mushroom*>& mushrooms, Player* player){
 		if (Check != 0 && Check != collider::down && Check != collider::_down) {
 			player->velocity.second= -sqrt(2.0f * 981.0f * player->jumHeight * 1.7f);
 			player->canJump = false;
+            Mix_PlayChannel(-1, mrjump, 0);
 		}
 	}
 }

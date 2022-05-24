@@ -22,3 +22,24 @@ SDL_RendererFlip FLIP_HOR = (SDL_RendererFlip) (SDL_FLIP_HORIZONTAL | SDL_FLIP_V
 SDL_RendererFlip FLIP_NONE = SDL_FLIP_NONE;
 
 TTF_Font *fGame;
+
+// Game Sounds
+
+Mix_Chunk *pickCoin;
+Mix_Chunk *hit;
+Mix_Chunk *jump;
+Mix_Chunk *slash;
+Mix_Chunk *downSound;
+Mix_Chunk *tick;
+Mix_Chunk *pushrock;
+Mix_Chunk *win;
+Mix_Chunk *lose;
+Mix_Chunk *kill;
+Mix_Chunk *landing;
+Mix_Chunk *mrjump;
+Mix_Chunk *die;
+Mix_Chunk *tele;
+
+//Game Musics
+Mix_Music *mainMusic;
+Mix_Music *mainMenu;

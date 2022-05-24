@@ -62,6 +62,8 @@ bool Texture::loadFromFile(std::string path){
 			if (!mHeight && !mWidth){
 				mWidth = loadedSurface->w;
 				mHeight = loadedSurface->h;
+				rect.w = mWidth;
+				rect.h = mHeight;
 			}
 		}
 		SDL_FreeSurface(loadedSurface);

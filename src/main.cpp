@@ -91,21 +91,41 @@ bool Init(){
 	}
 	std::string fontPath = "data/Fonts/visitor1.ttf";
 	fGame = TTF_OpenFont(fontPath.c_str(), 40);
+	pickCoin = Mix_LoadWAV("data/Sounds/pickcoin.wav");
+	jump = Mix_LoadWAV("data/Sounds/jump.wav");
+	hit = Mix_LoadWAV("data/Sounds/hit.wav");
+	slash = Mix_LoadWAV("data/Sounds/slash.wav");
+	downSound = Mix_LoadWAV("data/Sounds/down.wav");
+	tick = Mix_LoadWAV("data/Sounds/tick.wav");
+	pushrock = Mix_LoadWAV("data/Sounds/pushrock.wav");
+	win = Mix_LoadWAV("data/Sounds/win.wav");
+	lose = Mix_LoadWAV("data/Sounds/lose.wav");
+	kill = Mix_LoadWAV("data/Sounds/kill.wav");
+	mrjump = Mix_LoadWAV("data/Sounds/mrjump.wav");
+	die = Mix_LoadWAV("data/Sounds/die.wav");
+	tele = Mix_LoadWAV("data/Sounds/tele.wav");
+
+	mainMusic = Mix_LoadMUS("data/Sounds/mainMusic.wav");
+	mainMenu = Mix_LoadMUS("data/Sounds/mainMenu.wav");
+	SDL_Surface *icon = IMG_Load("data/textures/Background/logo.png");
+	SDL_SetWindowIcon(window, icon);
 	return success;
 }
 
 int Menu(){
 	mainscreen = new MainScreen();
     mainscreen->Init();
+	Mix_PlayMusic(mainMenu, -1);
 	Uint32 start_time = 0, current_time, deltaTime;
 	bool quit = false;
-    while (!quit){
+    int state = -1;
+	while (!quit){
 		SDL_Event event;
 		frameStart = SDL_GetTicks();
 		current_time = SDL_GetTicks();
 		deltaTime = current_time - start_time;
 		start_time = current_time;
-		int state = mainscreen->Update(deltaTime);
+		state = mainscreen->Update(deltaTime);
 		SDL_RenderClear(renderer);
 		while (SDL_PollEvent(&event) != 0){
 			if (event.type == SDL_QUIT){
@@ -142,6 +162,7 @@ int PlayGame(){
 		SDL_Event event;
 		if (quitGame) break;
 		game->Init();
+		Mix_PlayMusic(mainMusic, -1);
 		while (!quitGame){
 			frameStart = SDL_GetTicks();
 			SDL_RenderClear(renderer);
@@ -159,6 +180,7 @@ int PlayGame(){
 					if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
 						if (currentstate == -1) currentstate = 1;
 						else currentstate = -1;
+						Mix_PlayChannel(-1, tick, 0);
 					}
 					if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN && currentstate == 1 && event.key.repeat == 0) 
 						return MENU;
@@ -166,6 +188,7 @@ int PlayGame(){
 			}
 	     	if (currentstate != 1) game->Update(deltaTime);
 			if (game->isWinGame()){
+				Mix_HaltChannel(-1);
 				game->RenderGameWin();
 				const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
     			if (currentKeyStates[SDL_SCANCODE_RETURN]) return MENU; 
@@ -226,6 +249,7 @@ int Exit(){
 void Close(){
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	Mix_FreeMusic(mainMusic);
 	window = nullptr;
 	renderer = nullptr;
 	Mix_CloseAudio();

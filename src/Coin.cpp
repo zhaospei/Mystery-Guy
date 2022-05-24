@@ -9,7 +9,6 @@ Coin::Coin(std::pair<int, int> pos){
     collider = new Collider(*this);
     eatCoin = false;
     deleteCoin = false;
-    //std::cout << rect.h << " " << rect.w << std::endl;
 }
 
 Coin::~Coin(){

@@ -15,7 +15,6 @@ int Collider::checkCollision(Collider* other,float push) {
     std::pair<int, int> thisPosition = getPosition();
     std::pair<float, float> thisCenterPosition = getCenterPosition();
     std::pair<int, int> thisSize = getSize();
-   // std::cout << thisCenterPosition.first << " " << thisCenterPosition.second << " " << otherCenterPosition.first << " " << otherCenterPosition.second << std::endl;
     float deltaX = 2 * otherPosition.first + otherSize.first - 2 * thisPosition.first - thisSize.first;
     float deltaY = 2 * otherPosition.second + otherSize.second - 2 * thisPosition.second - thisSize.second;
     float intersectX = abs(deltaX) - (otherSize.first + thisSize.first);
