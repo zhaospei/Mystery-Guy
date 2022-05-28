@@ -5,6 +5,8 @@ A project for Advance Programing Subject
 
 A game project made with SDL2 C++.
 
+![bsp_img]([https://i.imgur.com/bT7p3lS.jpg](https://i.imgur.com/2ICvtNn.png))
+
 Game Demo: [https://youtu.be/TkuNdcEBiwg](https://youtu.be/kpw9D7_Dofk)
 
 ## Technologies
