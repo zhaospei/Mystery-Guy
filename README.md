@@ -21,6 +21,3 @@ All code was written by me.
 
 # Sources for Artwork:
 All artworks from: https://o-lobster.itch.io/platformmetroidvania-pixel-art-asset-pack?fbclid=IwAR3TtVtFpgx_XIyhyS-poWvypx46EnQ5L7Si8DxbpsHqe9JQAXP-7nuUb8Y
-
-# Source code with SDL2 Files
-https://drive.google.com/file/d/1dmRt8dI4iRN_Otc0GC6-9AINYGnbL1CJ/view?usp=sharing
