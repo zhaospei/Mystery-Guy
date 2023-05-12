@@ -1,9 +1,11 @@
-# MYSTERY GUY - A SMALL MADE WITH C++ AND SDL2
+# MYSTERY GUY - A SMALL GAME MADE WITH C++ AND SDL2
 
 **Mystery Guy C++/SDL2 Game by Tuan-Dung Bui.**
 
-**Author**: Tuan-Dung Bui 
+**Author**: Tuan-Dung Bui
+
 **Student ID**: 21020006
+
 **Game Demo**: [https://youtu.be/TkuNdcEBiwg](https://youtu.be/kpw9D7_Dofk)
 
 ![bsp_img](https://i.imgur.com/6jdet3I.png)
@@ -49,6 +51,10 @@ Kill the monsters and unlock the mysterious door. Try to pick up golds as much a
 
 ## How to win
 There are five rounds. If you can go to the 5th door, you will win this game. Let's enjoy it! 
+
+# Game Demo
+You can see it on Youtube: [https://youtu.be/TkuNdcEBiwg](https://youtu.be/kpw9D7_Dofk)
+
 # Sources for Artwork
 All artworks from: https://o-lobster.itch.io/platformmetroidvania-pixel-art-asset-pack?fbclid=IwAR3TtVtFpgx_XIyhyS-poWvypx46EnQ5L7Si8DxbpsHqe9JQAXP-7nuUb8Y
 
