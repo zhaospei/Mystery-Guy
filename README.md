@@ -1,11 +1,14 @@
 # Mystery Guy - A small game made with C++ and SDL2.
-
-**Mystery Guy C++/SDL2 Game by Tuan-Dung Bui.**
-
-**Author**: Tuan-Dung Bui
-
-**Student ID**: 21020006
-
+<p align="center">
+    <strong> Mystery Guy C++/SDL2 Game by Tuan-Dung Bui. </strong>
+</p>
+<p align="center">
+ <strong>Author</strong>: Tuan-Dung Bui
+</p>
+<p align="center">
+ <strong> Student ID </strong>: 21020006
+</p>
+    
 **Game Demo**: [https://youtu.be/TkuNdcEBiwg](https://youtu.be/kpw9D7_Dofk)
 
 ![bsp_img](https://i.imgur.com/6jdet3I.png)
@@ -59,4 +62,8 @@ You can see it on Youtube: [https://youtu.be/TkuNdcEBiwg](https://youtu.be/kpw9D
 All artworks from: https://o-lobster.itch.io/platformmetroidvania-pixel-art-asset-pack?fbclid=IwAR3TtVtFpgx_XIyhyS-poWvypx46EnQ5L7Si8DxbpsHqe9JQAXP-7nuUb8Y
 
 # Contributing
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/48708971/237909370-f1d14c2a-527a-482a-96f4-ed509cd8eb40.gif" alt="animated" />
+</p>
+
 Pull requests are welcome! For major refactors, please open an issue first to discuss what you would like to improve. Feel free to create a fork of this repository or use the code for any other noncommercial purposes.
