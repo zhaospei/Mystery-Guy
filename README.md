@@ -1,4 +1,4 @@
-# MYSTERY GUY - A SMALL GAME MADE WITH C++ AND SDL2
+# Mystery Guy - A small game made with C++ and SDL2.
 
 **Mystery Guy C++/SDL2 Game by Tuan-Dung Bui.**
 
